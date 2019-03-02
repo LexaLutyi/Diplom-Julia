@@ -3,5 +3,17 @@ using LinearAlgebra
 
 using InteractiveUtils
 
-const A = [0 1
-           0 0]
+A = [0. 1. ;0. 0.]
+
+B = [0. ;1.]
+N_AB = [B A*B]
+
+C = [1. 0.]
+N_CA = [C; C *A]
+
+# Добавить вычисление P
+Q = transpose(A) * P + P * A - 2 * transpose(C)*C
+
+P = [1. -0.5; -0.5 1.]
+
+F = -P^(-1)*transpose(C)
