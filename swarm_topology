@@ -1,9 +1,9 @@
 using LightGraphs
 using GraphPlot
 
-agents_amt = 1
+agents_amt = 6
 
-G = SimpleDiGraph(6)
+G = SimpleDiGraph(agents_amt)
 add_edge!(G, 1, 2)
 add_edge!(G, 2, 3)
 add_edge!(G, 3, 4)
@@ -19,15 +19,3 @@ L = laplacian_matrix(G)
 μ = filter(p-> ~isapprox(p, 0.0; atol=eps(Float64), rtol=0), λ)
 
 c = 1. / min(μ...)
-
-I₆ = Matrix{Float64}(I, 6, 6)
-
-Q = [A B*K; zeros(2,2) (A + B*K)]
-
-Z₀ = kron(I₆, Q)
-
-H = [zeros(2,4); -F*C F*C]
-
-Z₁ = c * kron(L, H)
-
-Z = Z₀ + Z₁

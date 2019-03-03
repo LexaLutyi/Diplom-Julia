@@ -6,14 +6,28 @@ using InteractiveUtils
 include("agent_dynamic")
 include("swarm_topology")
 
+
+Iₙ = Matrix{Float64}(I, agents_amt, agents_amt)
+
+Q = [A B*K; zeros(agent_order, agent_order) (A + B*K)]
+
+Z₀ = kron(Iₙ, Q)
+
+H = [zeros(agent_order, 2 * agent_order); -F*C F*C]
+
+Z₁ = c * kron(L, H)
+
+Z = Z₀ + Z₁
+
+
 function swarm(du, u, h, p, t)
-    du[:] = Z * h(t-)
+    du[:] = Z * h(t - 0.)
 end
 
 """
 Задаем начальные условия
 """
-h(p,t) = randn(4 * agents_amt)
+h(p,t) = randn(2* agent_order * agents_amt)
 u0 = h(nothing, 0)
 
 """
