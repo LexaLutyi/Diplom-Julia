@@ -12,8 +12,13 @@ C = [1. 0.]
 N_CA = [C; C *A]
 
 # Добавить вычисление P
-Q = transpose(A) * P + P * A - 2 * transpose(C)*C
+# 0 > Q = transpose(A) * P + P * A - 2 * transpose(C)*C
 
 P = [1. -0.5; -0.5 1.]
 
 F = -P^(-1)*transpose(C)
+
+K = [-1. -2.]
+
+# println(eigvals(A + B*K)) [-1. -1.]
+# println(eigvals(A + F*C)) [-0.666667+0.471405im, -0.666667-0.471405im]
