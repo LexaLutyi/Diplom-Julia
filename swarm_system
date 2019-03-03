@@ -3,7 +3,9 @@ using LinearAlgebra
 
 using InteractiveUtils
 
-agents_amt = 1
+include("test_graph")
+
+
 
 """
 Динамика одного робота

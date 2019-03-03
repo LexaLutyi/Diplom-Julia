@@ -1,6 +1,8 @@
 using LightGraphs
 using GraphPlot
 
+agents_amt = 1
+
 G = SimpleDiGraph(6)
 add_edge!(G, 1, 2)
 add_edge!(G, 2, 3)
