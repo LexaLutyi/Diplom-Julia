@@ -1,0 +1,38 @@
+using DifferentialEquations
+using LinearAlgebra
+
+using InteractiveUtils
+
+include("agent_dynamic")
+include("swarm_topology")
+
+function swarm(du, u, h, p, t)
+    du[:] = Z * h(t-)
+end
+
+"""
+Задаем начальные условия
+"""
+h(p,t) = randn(4 * agents_amt)
+u0 = h(nothing, 0)
+
+"""
+Время интегрирования
+"""
+delay = 0.
+tstart = 0.
+tend = 10.
+tspan = (tstart, tend)
+
+prob = DDEProblem(solo,u0,h,tspan,delay)
+sol = solve(prob)
+
+
+#]add Plots # You need to install Plots.jl before your first time using it!
+using Plots
+#plotly() # You can optionally choose a plotting backend
+
+#plot(sol, vars=(0,1))
+#plot!(sol, vars=(0,2))
+plt = plot(sol)
+display(plt)
