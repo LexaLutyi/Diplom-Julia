@@ -4,11 +4,11 @@
 
 agent_order = 2
 
-A = [0. 1. ;0. 0.]
+A = [0. 1. ;0. -0.]
 B = [0. ;1.]
-# N_AB = [B A*B]
+N_AB = [B A*B]
 C = [1. 0.]
-# N_CA = [C; C *A]
+N_CA = [C; C *A]
 # Добавить вычисление P
 # Q = transpose(A) * P + P * A - 2 * transpose(C)*C
 P = [1. -0.5; -0.5 1.]
@@ -16,6 +16,6 @@ P = [1. -0.5; -0.5 1.]
 F = -P^(-1)*transpose(C)
 K = [-1. -2.]
 
-# println(eigvals(A + B*K)) [-1. -1.]
-# println(eigvals(A + F*C)) [-0.666667+0.471405im, -0.666667-0.471405im]
-# println(eigvals([A B*K; -F*C (A + B*K + F*C)]))
+println(eigvals(A + B*K)) # [-1. -1.]
+println(eigvals(A + F*C)) # [-0.666667+0.471405im, -0.666667-0.471405im]
+println(eigvals([A B*K; -F*C (A + B*K + F*C)]))

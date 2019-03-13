@@ -21,13 +21,21 @@ Z = Z₀ + Z₁
 
 
 function swarm(du, u, h, p, t)
-    du[:] = Z * h(t - 0.)
+    du[:] = Z * u
+    if t > 5 && add_edge!(G, 1, 3)
+        L[:] = laplacian_matrix(G)
+        λ[:] = real(laplacian_spectrum(G))
+        μ[:] = filter(p-> ~isapprox(p, 0.0; atol=1.e-10, rtol=0), λ)
+        c = 1. / min(μ...) + 0.5
+        Z₁[:] = c * kron(L, H)
+        Z[:] = Z₀ + Z₁
+    end
 end
 
 """
 Задаем начальные условия
 """
-h(p,t) = randn(2* agent_order * agents_amt)
+h(p,t) = randn(2 * agent_order * agents_amt)
 u0 = h(nothing, 0)
 
 """
@@ -35,18 +43,28 @@ u0 = h(nothing, 0)
 """
 delay = 0.
 tstart = 0.
-tend = 10.
+tend = 15.
 tspan = (tstart, tend)
 
-prob = DDEProblem(solo,u0,h,tspan,delay)
+prob = DDEProblem(swarm,u0,h,tspan,delay)
 sol = solve(prob)
 
 
 #]add Plots # You need to install Plots.jl before your first time using it!
 using Plots
-#plotly() # You can optionally choose a plotting backend
+plotly() # You can optionally choose a plotting backend()
 
 #plot(sol, vars=(0,1))
 #plot!(sol, vars=(0,2))
-plt = plot(sol)
+
+ind = Array(1:2*agent_order*agents_amt)
+plt = plot(sol, vars=filter(p->mod(p, 4) == 1, ind), color="green",dpi=1000)
+plt = plot!(sol, vars=filter(p->mod(p, 4) == 3, ind), color="red",dpi=1000)
 display(plt)
+
+plt_dot = plot(sol, vars=filter(p->mod(p, 4) == 2, ind), color="green",dpi=1000)
+plt_dot = plot!(sol, vars=filter(p->mod(p, 4) == 0, ind), color="red",dpi=1000)
+display(plt_dot)
+
+
+w = eigvals(Z)
