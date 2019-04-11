@@ -22,14 +22,14 @@ Z₁ = c * kron(L, H)
 
 function swarm(du, u, h, p, t)
     du[:] = Z₀ * u + Z₁ * h(p, t - delay)
-    """if t > 5 && add_edge!(G, 1, 3)
+    if t > 10 && add_edge!(G, 2, 1)
         L[:] = laplacian_matrix(G)
         λ[:] = real(laplacian_spectrum(G))
         μ[:] = filter(p-> ~isapprox(p, 0.0; atol=1.e-10, rtol=0), λ)
         c = 1. / min(μ...) + 0.5
         Z₁[:] = c * kron(L, H)
-        Z[:] = Z₀ + Z₁
-    end"""
+        # Z[:] = Z₀ + Z₁
+    end
 end
 
 """
@@ -41,7 +41,7 @@ u0 = h(nothing, 0)
 """
 Время интегрирования
 """
-delay = 0.2
+delay = 0.7
 tstart = 0.
 tend = 20.
 tspan = (tstart, tend)
@@ -80,3 +80,7 @@ plt = plot(sol,
                 vars=filter(p->p in (1, 2, 5, 6), ind),
                 dpi=1000)
 display(plt)
+er = map(p -> norm(p[1:2] - p[5:6]), sol.u)
+plt = plot(sol.t, er)
+display(plt)
+sol.t
