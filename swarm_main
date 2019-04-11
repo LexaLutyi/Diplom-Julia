@@ -16,20 +16,20 @@ Z₀ = kron(Iₙ, Q)
 H = [zeros(agent_order, 2 * agent_order); -F*C F*C]
 
 Z₁ = c * kron(L, H)
-
-Z = Z₀ + Z₁
-
+# U = Matrix(Z₁)
+# Z = Z₀ + Z₁
+# eigvals(Z[5:8, 5:8])
 
 function swarm(du, u, h, p, t)
-    du[:] = Z * u
-    if t > 5 && add_edge!(G, 1, 3)
+    du[:] = Z₀ * u + Z₁ * h(p, t - delay)
+    """if t > 5 && add_edge!(G, 1, 3)
         L[:] = laplacian_matrix(G)
         λ[:] = real(laplacian_spectrum(G))
         μ[:] = filter(p-> ~isapprox(p, 0.0; atol=1.e-10, rtol=0), λ)
         c = 1. / min(μ...) + 0.5
         Z₁[:] = c * kron(L, H)
         Z[:] = Z₀ + Z₁
-    end
+    end"""
 end
 
 """
@@ -41,9 +41,9 @@ u0 = h(nothing, 0)
 """
 Время интегрирования
 """
-delay = 0.
+delay = 0.2
 tstart = 0.
-tend = 15.
+tend = 20.
 tspan = (tstart, tend)
 
 prob = DDEProblem(swarm,u0,h,tspan,delay)
@@ -58,13 +58,25 @@ plotly() # You can optionally choose a plotting backend()
 #plot!(sol, vars=(0,2))
 
 ind = Array(1:2*agent_order*agents_amt)
-plt = plot(sol, vars=filter(p->mod(p, 4) == 1, ind), color="green",dpi=1000)
-plt = plot!(sol, vars=filter(p->mod(p, 4) == 3, ind), color="red",dpi=1000)
+"""
+plt = plot(sol,
+            vars=filter(p->mod(p, 4) == 1, ind),
+            color="green",
+            dpi=1000)
+plt = plot!(sol,
+            vars=filter(p->mod(p, 4) == 3, ind),
+            color="red",
+            dpi=1000)
+plt = plot!(sol,
+                vars=filter(p->mod(p, 4) == 2, ind),
+                color="black",
+                dpi=1000)
+plt = plot!(sol,
+                vars=filter(p->mod(p, 4) == 0, ind),
+                color="blue",
+                dpi=1000)
+"""
+plt = plot(sol,
+                vars=filter(p->p in (1, 2, 5, 6), ind),
+                dpi=1000)
 display(plt)
-
-plt_dot = plot(sol, vars=filter(p->mod(p, 4) == 2, ind), color="green",dpi=1000)
-plt_dot = plot!(sol, vars=filter(p->mod(p, 4) == 0, ind), color="red",dpi=1000)
-display(plt_dot)
-
-
-w = eigvals(Z)

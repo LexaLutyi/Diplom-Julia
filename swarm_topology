@@ -1,19 +1,21 @@
 using LightGraphs
-agents_amt = 6
+agents_amt = 2
 
 G = SimpleDiGraph(agents_amt)
 
 add_edge!(G, 1, 2)
+"""
 add_edge!(G, 2, 3)
 add_edge!(G, 3, 4)
 add_edge!(G, 4, 2)
 add_edge!(G, 3, 6)
 add_edge!(G, 1, 5)
 add_edge!(G, 5, 6)
+"""
 
-L = laplacian_matrix(G)
+L = laplacian_matrix(G, dir=:in)
 
 λ = real(laplacian_spectrum(G))
 μ = filter(p-> ~isapprox(p, 0.0; atol=eps(Float64), rtol=0), λ)
 
-c = 1. / min(μ...) + 0.5
+c = length(μ) > 0 ? (1. / min(μ...) + 0.5) : 1
